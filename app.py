@@ -154,7 +154,7 @@ def pesquisar_voos(
     origem: str,
     destino: str,
     data_ida: str,
-    data_volta: str | None = None,
+    data_volta: str,
     adultos: int = 1,
     criancas: int = 0,
     classe: int | None = None,
