@@ -32,7 +32,7 @@ load_dotenv()
 META_API_VERSION = os.environ.get("META_API_VERSION", "v25.0")
 FB_VERIFY_TOKEN = os.environ.get("FB_VERIFY_TOKEN", "testejetur")
 IG_VERIFY_TOKEN = os.environ.get("IG_VERIFY_TOKEN", "instagramjetur2026")
-api_key = os.environ.get("SERPAPI_KEY")
+api_key = os.environ("SERPAPI_KEY")
 
 #PAGE_TOKEN = os.environ.get("PAGE_TOKEN", "")
 PAGE_TOKEN = "EAAUn7i7r9zcBS7OcXgsVhuNnvxSr0LxrZAA15xVOPzLjbrKJpCiGomXPYRtxPOvV3st93BggFOKzSDCAafZB8tlMivb7ZBDHUScNc2b5Ewuz2T9p2lpQJIyUAJCWdAAou57JiuCW6R8kpHqwMZCdqZBIvjqju3hD1ZAPSzcmdZBZCvccKeI1lA6hpmD0AUIu0XebRJ808QZDZD"
@@ -152,8 +152,6 @@ def _chamar(
     return dados
 
 
-
-
 agente = Agent(
     name="Lisa",
     model="gemini-3.8-flash",  # confirma que este modelo existe na tua conta
@@ -162,7 +160,7 @@ agente = Agent(
 
     """,
     # TODO: adicionar aqui as funções Python (get_cliente, get_negocio, ...)
-    tools=[pesquisar_voos],
+    tools=[],
 )
 
 session_service = InMemorySessionService()
