@@ -3,7 +3,7 @@ import logging
 
 import requests
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from google.adk.agents import Agent
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
@@ -197,7 +197,7 @@ agente = Agent(
 
     """,
     # TODO: adicionar aqui as funções Python (get_cliente, get_negocio, ...)
-    tools=[],
+    tools=[pesquisar_voos],
 )
 
 session_service = InMemorySessionService()
@@ -225,6 +225,46 @@ async def perguntar_ao_agente(user_id: str, pergunta: str):
         if ev.is_final_response() and ev.content and ev.content.parts:
             resposta = ev.content.parts[0].text
     return resposta
+
+@app.post("/receber")
+async def chat():
+    dados = request.get_json(silent=True) or {} # Pegando os dados que serão inseridos nesse endpoint
+    # Armazenando os dados em cada variável
+    pergunta = dados.get("pergunta")
+    user_id = dados.get("user_id", "u1")
+    session_id = dados.get("session_id", "s1")
+
+    # Verifica se a variável "pergunta" esta vazia ou não
+    if not pergunta:
+        return jsonify({"erro": "O campo 'pergunta' é obrigatório."}), 400
+
+    # Executando a sessão
+    await garantir_sessao(user_id, session_id)
+
+    # Tratando as mensagens dos usuários para um formato que o bot entenda
+    mensagem = types.Content(role="user", parts=[types.Part(text=pergunta)])
+    
+    ferramentas = [] # Criando uma variável para armazenar as ferramentas que o bot usou se caso queira saber quais ferramentas ele usou na conversa
+    resposta = None
+
+    # Processando a mensagem do usuário para o bot gerar uma resposta em seguida
+    async for event in runner.run_async(
+        user_id=user_id, session_id=session_id, new_message=mensagem
+    ):
+        for call in event.get_function_calls():
+            ferramentas.append({"nome": call.name, "args": dict(call.args)})
+        if event.is_final_response() and event.content:
+            resposta = event.content.parts[0].text
+
+    # Retornando um json final contendo a reposta do bot, a sessão da conversa e a lista de ferramentas usando pelo bot
+    return jsonify(
+        {
+            "session_id": session_id,
+            "resposta": resposta,
+            "ferramentas_usadas": ferramentas,
+        }
+    )
+
 
 
 # --- Webhook do Facebook Messenger ---------------------------------------------
