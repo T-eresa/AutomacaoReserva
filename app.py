@@ -197,7 +197,7 @@ agente = Agent(
 
     """,
     # TODO: adicionar aqui as funções Python (get_cliente, get_negocio, ...)
-    tools=[],
+    tools=[pesquisar_voos],
 )
 
 session_service = InMemorySessionService()
