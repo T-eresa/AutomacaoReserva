@@ -155,10 +155,7 @@ def _chamar(
 agente = Agent(
     name="Lisa",
     model="gemini-3.8-flash",  # confirma que este modelo existe na tua conta
-    instruction="""
-        Use a ferramenta pesquisar_voos para fazer pesquisas de voos disponíveis
-
-    """,
+    instruction=""" """,
     # TODO: adicionar aqui as funções Python (get_cliente, get_negocio, ...)
     tools=[],
 )
