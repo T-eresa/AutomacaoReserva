@@ -32,7 +32,7 @@ load_dotenv()
 META_API_VERSION = os.environ.get("META_API_VERSION", "v25.0")
 FB_VERIFY_TOKEN = os.environ.get("FB_VERIFY_TOKEN", "testejetur")
 IG_VERIFY_TOKEN = os.environ.get("IG_VERIFY_TOKEN", "instagramjetur2026")
-api_key = os.environ("SERPAPI_KEY")
+
 
 #PAGE_TOKEN = os.environ.get("PAGE_TOKEN", "")
 PAGE_TOKEN = "EAAUn7i7r9zcBS7OcXgsVhuNnvxSr0LxrZAA15xVOPzLjbrKJpCiGomXPYRtxPOvV3st93BggFOKzSDCAafZB8tlMivb7ZBDHUScNc2b5Ewuz2T9p2lpQJIyUAJCWdAAou57JiuCW6R8kpHqwMZCdqZBIvjqju3hD1ZAPSzcmdZBZCvccKeI1lA6hpmD0AUIu0XebRJ808QZDZD"
@@ -151,6 +151,44 @@ def _chamar(
         raise SerpApiError(f"{engine}: {erro or 'HTTP ' + str(resp.status_code)}")
     return dados
 
+def pesquisar_voos(
+    origem: str,
+    destino: str,
+    data_ida: str,
+    data_volta: str,
+    adultos: int = 1,
+    criancas: int = 0,
+    classe=1,
+    moeda: str = "EUR",
+    idioma: str = "pt",
+    api_key= api_key,
+    **extra,
+) -> dict:
+    """Essa função serve para fazer pesquisas de voos
+    args:
+        origem : essa Variável vai guardar a origem
+        destino : essa variável vai guardar o destino
+        data_ida : essa variável vai armazrnar a data de ida que o usuário pretende viajar 
+        data_volta : essa variável vai guardar a data de regresso 
+        adultos : Essa variável vai armazenar a quantidade de adultos que vão viajar
+        criancas : essa variável vai armazenar a quantidade de crianças que vão viajar
+        Classe : essa variável vai guardar a classe que o usuário pretende viajar use: 1- Econômica (padrão) 2- Econômica Premium 3- Executiva 4- Primeira Classe      
+    """
+    return _chamar("google_flights", {
+    "departure_id": origem,
+    "arrival_id": destino,
+    "outbound_date": data_ida,
+    "return_date": data_volta,
+    "type": 1 if data_volta else 2,  # 1 ida e volta, 2 só ida
+    "adults": adultos,
+    "children": criancas,
+    "travel_class": classe,
+    "currency": moeda,
+    "hl": idioma,
+    **extra,
+    }, api_key)
+
+
 
 agente = Agent(
     name="Lisa",
@@ -160,7 +198,7 @@ agente = Agent(
 
     """,
     # TODO: adicionar aqui as funções Python (get_cliente, get_negocio, ...)
-    tools=[],
+    tools=[pesquisar_voos],
 )
 
 session_service = InMemorySessionService()
