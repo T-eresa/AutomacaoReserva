@@ -85,7 +85,7 @@ def pesquisar_voos(
     data_volta: str,
     adultos: int = 1,
     criancas: int = 0,
-    classe=1,
+    classe: int =1,
     moeda: str = "EUR",
     idioma: str = "pt",
 ) -> dict:
