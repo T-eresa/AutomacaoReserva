@@ -16,6 +16,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from dotenv import load_dotenv
 
+from ferramentas import feer 
+
 BASE_URL = "https://serpapi.com/search.json"
 
 logging.basicConfig(level=logging.INFO)
@@ -95,111 +97,14 @@ def enviar_instagram(recipient_id: str, texto: str) -> bool:
 
 
 # --- Agente --------------------------------------------------------------------
-
-# Funções do Agente
-def _criar_sessao() -> requests.Session:
-    sessao = requests.Session()
-    retry = Retry(
-        total=3,
-        backoff_factor=1,
-        status_forcelist=(429, 500, 502, 503, 504),
-        allowed_methods=("GET",),
-    )
-    sessao.mount("https://", HTTPAdapter(max_retries=retry))
-    return sessao
-
-
-_SESSAO = _criar_sessao()
-
-
-def _chamar(
-    engine: str,
-    params: dict[str, Any],
-    api_key: str | None = None,
-    timeout: int = 30,
-) -> dict[str, Any]:
-    """Chamada genérica à SerpApi, com limpeza de parâmetros e tratamento de erros."""
-    chave = api_key or os.environ.get("SERPAPI_KEY")
-    if not chave:
-        raise SerpApiError("Define a variável de ambiente SERPAPI_KEY.")
-
-    consulta: dict[str, Any] = {}
-    for k, v in params.items():
-        if v is None:
-            continue
-        if isinstance(v, bool):
-            v = str(v).lower()
-        elif isinstance(v, (list, tuple)):
-            v = ",".join(str(i) for i in v)
-        consulta[k] = v
-    consulta["engine"] = engine
-    consulta["api_key"] = chave
-
-    try:
-        resp = _SESSAO.get(BASE_URL, params=consulta, timeout=timeout)
-    except requests.RequestException as e:
-        raise SerpApiError(f"{engine}: falha de rede ({e})") from e
-
-    try:
-        dados = resp.json()
-    except ValueError:
-        raise SerpApiError(f"{engine}: resposta não JSON (HTTP {resp.status_code})")
-
-    erro = dados.get("error")
-    if erro and "hasn't returned any results" in str(erro):
-        return dados  # pesquisa válida sem resultados
-    if resp.status_code >= 400 or erro:
-        raise SerpApiError(f"{engine}: {erro or 'HTTP ' + str(resp.status_code)}")
-    return dados
-
-def pesquisar_voos(
-    origem: str,
-    destino: str,
-    data_ida: str,
-    data_volta: str,
-    adultos: int = 1,
-    criancas: int = 0,
-    classe=1,
-    moeda: str = "EUR",
-    idioma: str = "pt",
-    api_key= api_key,
-    **extra,
-) -> dict:
-    """Essa função serve para fazer pesquisas de voos
-    args:
-        origem : essa Variável vai guardar a origem
-        destino : essa variável vai guardar o destino
-        data_ida : essa variável vai armazrnar a data de ida que o usuário pretende viajar 
-        data_volta : essa variável vai guardar a data de regresso 
-        adultos : Essa variável vai armazenar a quantidade de adultos que vão viajar
-        criancas : essa variável vai armazenar a quantidade de crianças que vão viajar
-        Classe : essa variável vai guardar a classe que o usuário pretende viajar use: 1- Econômica (padrão) 2- Econômica Premium 3- Executiva 4- Primeira Classe      
-    """
-    return _chamar("google_flights", {
-    "departure_id": origem,
-    "arrival_id": destino,
-    "outbound_date": data_ida,
-    "return_date": data_volta,
-    "type": 1 if data_volta else 2,  # 1 ida e volta, 2 só ida
-    "adults": adultos,
-    "children": criancas,
-    "travel_class": classe,
-    "currency": moeda,
-    "hl": idioma,
-    **extra,
-    }, api_key)
-
-
-
 agente = Agent(
     name="Lisa",
     model="gemini-3.8-flash",  # confirma que este modelo existe na tua conta
     instruction="""
-        Use a ferramenta pesquisar_voos para fazer pesquisas de voos disponíveis
-
+        Voçê é um agente de suporte de viagens, consegues fazer pesquisas de voos, reservas de hoteis, pesquisar destinos, etc.
+        Responda amigavelmente e seja sempre claro. Dê respostas mais resumidas focadas no objectivo.     
     """,
-    # TODO: adicionar aqui as funções Python (get_cliente, get_negocio, ...)
-    tools=[pesquisar_voos],
+    tools= feer
 )
 
 session_service = InMemorySessionService()
