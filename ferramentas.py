@@ -88,7 +88,6 @@ def pesquisar_voos(
     classe=1,
     moeda: str = "EUR",
     idioma: str = "pt",
-    api_key= api_key,
 ) -> dict:
     """Essa função serve para fazer pesquisas de voos
     args:
@@ -122,7 +121,6 @@ def opcoes_reserva_voo(
     data_volta: str | None = None,
     moeda: str = "EUR",
     idioma: str = "pt",
-    api_key: str | None = None,
 ) -> dict:
     """Google Flights Booking Options: links de compra de um voo escolhido.
     args:
@@ -157,7 +155,7 @@ def autocompletar_voos(texto: str, idioma: str = "pt", api_key: str | None = Non
     return _chamar("google_flights_autocomplete", {"q": texto, "hl": idioma}, api_key)
 
 
-def ofertas_voos(origem: str, moeda: str = "EUR", idioma: str = "pt", api_key: str | None = None) -> dict:
+def ofertas_voos(origem: str, moeda: str = "EUR", idioma: str = "pt") -> dict:
     """ Use esta função para procurar promoções do voos
         args
             origem : Essa variável vai receber o destino de viagem
@@ -173,7 +171,6 @@ def explorar_destinos(
     data_volta: str | None = None,
     moeda: str = "EUR",
     idioma: str = "pt",
-    api_key: str | None = None,
 ) -> dict:
     """Use essa função para procurar destinos mais baratos a partir de uma origem.
     args: 
@@ -190,10 +187,10 @@ def explorar_destinos(
     }, api_key)
 
 
-def estado_voo_tempo_real(api_key: str | None = None, **filtros) -> dict:
-    """Flightradar24: voos em tempo real. Os filtros (ex.: indicativo, aeroporto)
-    seguem a documentação. [CONFIRMAR parâmetros]"""
-    return _chamar("flightradar24", filtros, api_key)
+#def estado_voo_tempo_real(api_key: str | None = None, **filtros) -> dict:
+#    """Flightradar24: voos em tempo real. Os filtros (ex.: indicativo, aeroporto)
+#    seguem a documentação. [CONFIRMAR parâmetros]"""
+#    return _chamar("flightradar24", filtros, api_key)
 
 #Pesquisa de hoteis
 def pesquisar_hoteis(
@@ -205,7 +202,6 @@ def pesquisar_hoteis(
     moeda: str = "EUR",
     idioma: str = "pt",
     pais: str | None = None,
-    api_key: str | None = None,
 ) -> dict:
     """ Use esta função para pesquisar Hotels: pesquisa por destino e datas (YYYY-MM-DD).
     args
@@ -233,7 +229,6 @@ def detalhes_hotel(
     adultos: int = 2,
     moeda: str = "EUR",
     idioma: str = "pt",
-    api_key: str | None = None,
 ) -> dict:
     """Use essa função para mostrar detalhes dos hoteis: preços por fornecedor, comodidades, etc.
     args
@@ -256,7 +251,7 @@ def avaliacoes_hotel(
     property_token: str,
     idioma: str = "pt",
     pagina_seguinte: str | None = None,
-    api_key: str | None = None,
+
 ) -> dict:
     """Use essa função para fazer avaliaçõews de hoteis : Google Hotels Reviews.
     args
@@ -269,10 +264,10 @@ def avaliacoes_hotel(
     }, api_key)
 
 
-def fotos_hotel(property_token: str, idioma: str = "pt", api_key: str | None = None) -> dict:
+def fotos_hotel(property_token: str, idioma: str = "pt") -> dict:
     """Google Hotels Photos. [CONFIRMAR engine]"""
     return _chamar("google_hotels_photos", {"property_token": property_token, "hl": idioma}, api_key)
 
 
 
-feer = [pesquisar_voos, opcoes_reserva_voo, resolver_lugar, autocompletar_voos, ofertas_voos, explorar_destinos, estado_voo_tempo_real, pesquisar_hoteis, detalhes_hotel, avaliacoes_hotel, fotos_hotel]
+feer = [pesquisar_voos, opcoes_reserva_voo, resolver_lugar, autocompletar_voos, ofertas_voos, explorar_destinos, pesquisar_hoteis, detalhes_hotel, avaliacoes_hotel, fotos_hotel]
