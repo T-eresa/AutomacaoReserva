@@ -142,7 +142,7 @@ def opcoes_reserva_voo(
     }, api_key) 
 
 # Essa função serve para retornar o código do pais 
-def resolver_lugar(texto):
+def resolver_lugar(texto:str):
     sug = autocompletar_voos(texto).get("suggestions", [])
     return [
         {"nome": s["name"], "tipo": s.get("type"), "id": s["id"],
