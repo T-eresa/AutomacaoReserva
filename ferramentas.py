@@ -89,7 +89,6 @@ def pesquisar_voos(
     moeda: str = "EUR",
     idioma: str = "pt",
     api_key= api_key,
-    **extra,
 ) -> dict:
     """Essa função serve para fazer pesquisas de voos
     args:
@@ -112,7 +111,6 @@ def pesquisar_voos(
     "travel_class": classe,
     "currency": moeda,
     "hl": idioma,
-    **extra,
     }, api_key)
 
 
@@ -125,7 +123,6 @@ def opcoes_reserva_voo(
     moeda: str = "EUR",
     idioma: str = "pt",
     api_key: str | None = None,
-    **extra,
 ) -> dict:
     """Google Flights Booking Options: links de compra de um voo escolhido.
     args:
@@ -144,7 +141,6 @@ def opcoes_reserva_voo(
         "type": 1 if data_volta else 2,
         "currency": moeda,
         "hl": idioma,
-        **extra,
     }, api_key) 
 
 # Essa função serve para retornar o código do pais 
@@ -156,18 +152,18 @@ def resolver_lugar(texto):
         for s in sug
     ]
 
-def autocompletar_voos(texto: str, idioma: str = "pt", api_key: str | None = None, **extra) -> dict:
+def autocompletar_voos(texto: str, idioma: str = "pt", api_key: str | None = None) -> dict:
     """Google Flights Autocomplete: sugere aeroportos/cidades. [CONFIRMAR engine]"""
-    return _chamar("google_flights_autocomplete", {"q": texto, "hl": idioma, **extra}, api_key)
+    return _chamar("google_flights_autocomplete", {"q": texto, "hl": idioma}, api_key)
 
 
-def ofertas_voos(origem: str, moeda: str = "EUR", idioma: str = "pt", api_key: str | None = None,**extra,) -> dict:
+def ofertas_voos(origem: str, moeda: str = "EUR", idioma: str = "pt", api_key: str | None = None) -> dict:
     """ Use esta função para procurar promoções do voos
         args
             origem : Essa variável vai receber o destino de viagem
     """
     return _chamar("google_flights_deals", {
-        "departure_id": origem, "currency": moeda, "hl": idioma, **extra,
+        "departure_id": origem, "currency": moeda, "hl": idioma,
     }, api_key)
 
 
@@ -178,7 +174,6 @@ def explorar_destinos(
     moeda: str = "EUR",
     idioma: str = "pt",
     api_key: str | None = None,
-    **extra,
 ) -> dict:
     """Use essa função para procurar destinos mais baratos a partir de uma origem.
     args: 
@@ -192,7 +187,6 @@ def explorar_destinos(
         "return_date": data_volta,
         "currency": moeda,
         "hl": idioma,
-        **extra,
     }, api_key)
 
 
@@ -212,7 +206,6 @@ def pesquisar_hoteis(
     idioma: str = "pt",
     pais: str | None = None,
     api_key: str | None = None,
-    **extra,
 ) -> dict:
     """ Use esta função para pesquisar Hotels: pesquisa por destino e datas (YYYY-MM-DD).
     args
@@ -231,7 +224,6 @@ def pesquisar_hoteis(
         "currency": moeda,
         "hl": idioma,
         "gl": pais,
-        **extra,
     }, api_key)
 
 def detalhes_hotel(
@@ -242,7 +234,6 @@ def detalhes_hotel(
     moeda: str = "EUR",
     idioma: str = "pt",
     api_key: str | None = None,
-    **extra,
 ) -> dict:
     """Use essa função para mostrar detalhes dos hoteis: preços por fornecedor, comodidades, etc.
     args
@@ -252,14 +243,12 @@ def detalhes_hotel(
         adultos : Essa variável vai receber a quantidade de adultos que vão viajar
     """
     return _chamar("google_hotels", {
-        "q": extra.pop("q", "hotel"),
         "property_token": property_token,
         "check_in_date": check_in,
         "check_out_date": check_out,
         "adults": adultos,
         "currency": moeda,
         "hl": idioma,
-        **extra,
     }, api_key)
 
 
@@ -268,7 +257,6 @@ def avaliacoes_hotel(
     idioma: str = "pt",
     pagina_seguinte: str | None = None,
     api_key: str | None = None,
-    **extra,
 ) -> dict:
     """Use essa função para fazer avaliaçõews de hoteis : Google Hotels Reviews.
     args
@@ -278,13 +266,12 @@ def avaliacoes_hotel(
         "property_token": property_token,
         "hl": idioma,
         "next_page_token": pagina_seguinte,
-        **extra,
     }, api_key)
 
 
-def fotos_hotel(property_token: str, idioma: str = "pt", api_key: str | None = None, **extra) -> dict:
+def fotos_hotel(property_token: str, idioma: str = "pt", api_key: str | None = None) -> dict:
     """Google Hotels Photos. [CONFIRMAR engine]"""
-    return _chamar("google_hotels_photos", {"property_token": property_token, "hl": idioma, **extra}, api_key)
+    return _chamar("google_hotels_photos", {"property_token": property_token, "hl": idioma}, api_key)
 
 
 
