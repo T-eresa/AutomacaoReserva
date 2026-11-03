@@ -118,7 +118,7 @@ def opcoes_reserva_voo(
     origem: str,
     destino: str,
     data_ida: str,
-    data_volta: str | None = None,
+    data_volta: str,
     moeda: str = "EUR",
     idioma: str = "pt",
 ) -> dict:
@@ -150,7 +150,7 @@ def resolver_lugar(texto):
         for s in sug
     ]
 
-def autocompletar_voos(texto: str, idioma: str = "pt", api_key: str | None = None) -> dict:
+def autocompletar_voos(texto: str, idioma: str = "pt") -> dict:
     """Google Flights Autocomplete: sugere aeroportos/cidades. [CONFIRMAR engine]"""
     return _chamar("google_flights_autocomplete", {"q": texto, "hl": idioma}, api_key)
 
@@ -167,8 +167,8 @@ def ofertas_voos(origem: str, moeda: str = "EUR", idioma: str = "pt") -> dict:
 
 def explorar_destinos(
     origem: str,
-    data_ida: str | None = None,
-    data_volta: str | None = None,
+    data_ida: str,
+    data_volta: str,
     moeda: str = "EUR",
     idioma: str = "pt",
 ) -> dict:
@@ -196,12 +196,12 @@ def explorar_destinos(
 def pesquisar_hoteis(
     destino: str,
     check_in: str,
+    pais: str,
     check_out: str,
     adultos: int = 2,
     criancas: int = 0,
     moeda: str = "EUR",
     idioma: str = "pt",
-    pais: str | None = None,
 ) -> dict:
     """ Use esta função para pesquisar Hotels: pesquisa por destino e datas (YYYY-MM-DD).
     args
@@ -249,8 +249,8 @@ def detalhes_hotel(
 
 def avaliacoes_hotel(
     property_token: str,
+    pagina_seguinte: str,
     idioma: str = "pt",
-    pagina_seguinte: str | None = None,
 
 ) -> dict:
     """Use essa função para fazer avaliaçõews de hoteis : Google Hotels Reviews.
